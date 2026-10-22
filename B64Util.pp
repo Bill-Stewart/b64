@@ -120,7 +120,7 @@ end;
 // Input buffer will be at least this big
 procedure TB64Util.SetMinBufferSize(const NewMinBufferSize: DWORD);
 begin
-  if NewMinBufferSize < BASE64_MAX_BUFFER_SIZE then
+  if NewMinBufferSize <= BASE64_MAX_BUFFER_SIZE then
   begin
     MinBufSize := NewMinBufferSize;
     {$IFDEF DEBUG}

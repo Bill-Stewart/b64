@@ -20,47 +20,50 @@ B64 is a Windows command-line utility that encodes data to and decodes data from
 
 ## USAGE
 
-**b64** **--encode**[**=**_filename_] [**--out=**_filename_ [**--force**]] [**--newlinetype=**_type_] [**--safe**] [**--quiet**]
+**B64** _options_ [**--** ...]
 
-**b64** **--decode**[=_filename_] [**--out=**_filename_ [**--force**]] [**--quiet**]
+## OPTIONS
 
-**b64** **--encodestring** [**--out=**_filename_ [**--force**]] [**--quiet**] **--** _string_ [...]
-
-**b64** **--decodestring** [**--out=**_filename_ [**--force**]] [**--quiet**] **--** _string_
-
-## PARAMETERS
-
-Parameters are case-sensitive.
-
-**--encode**[**=**_filename_] or **-e** [_filename_] - Encode content to base64. Omit a file name to encode the content of standard input. Enclose the filename between `"` characters if it contains whitespace.
-
-**--newlinetype=**_type_ or **-n** _type_ - Set the newline type for encoded base64 output. The _type_ argument is not case-sensitive and is one of: `CRLF` (carriage return/linefeed--Windows style), `LF` (linefeed--Unix style), or `None` (no newlines). With `CRLF` or `LF`, output data contains 64-character lines. The default is `CRLF`.
-
-**--safe** or **-s** - Encodes with `+` replaced by `-` and `/` replaced by `_` as defined in RFC 4648 Section 5.
-
-**--decode**[**=**_filename_] or **-d** [_filename_] - Decode content from base64. Omit a file name to decode the content of standard output. See **REMARKS** for details about decodable base64 input containing newlines. Enclose the filename between `"` characters if it contains whitespace.
-
-**--out=**_filename_ or **-o** _filename_ - Write output to the specified file. Omit this parameter to write output to standard output (not recommended for binary files). Enclose the filename between `"` characters if it contains whitespace. You must specify **--force** to overwrite an existing file.
-
-**--encodestring** or **-E** - Encode the remainder of the command line text following two dashes (`--`) to Unicode (UTF16LE) base64 without newlines. The output is suitable for use with the PowerShell **-EncodedCommand** parameter.
-
-**--decodestring** or **-D** - Decode the remainder of the command line text following two dashes (`--`) from base64.
-
-**--quiet** or **-q** - Suppress any error messages written to standard error.
+| Option                                         | Description
+| ------                                         | -----------
+| **--encode**[=_filename_], **-e** [_filename_] | Encode to base64
+| **--decode**[=_filename_], **-d** [_filename_] | Decode from base64
+| **--out=**_filename_, **-o** _filename_        | Write output to file
+| **--force**                                    | Overwrite existing output file
+| **--newlinetype=**_type_, **-n** _type_        | Encode newline type: **CRLF**, **LF**, or **None**
+| **--safe**, **-s**                             | Encode using **-** and **_** (RFC 4648 Sec. 5)
+| **--encodestring**, **-E**                     | Encode string after **--** to UTF16 base64
+| **--decodestring**, **-D**                     | Decode string after **--** from base64
+| **--buffersize=**_n_, **-B** _n_               | Minimum buffer sizes in KB (default=8)
+| **--quiet**, **-q**                            | Suppress error messages
 
 ## REMARKS
 
-Decodable base64 input containing newlines must meet the following criteria:
+Please note the following:
 
-*   Each line's length (except the last) must be a multiple of 4 characters
+* Option names are case-sensitive; option arguments are not
 
-*   All lines (except the last) must be the same length
+* For **--encode** (**-e**) or **--decode** (**-d**), omit filename to encode or decode stdin
 
-*   Lines cannot be longer than 996 characters
+* Without **--out** (**-o**), output goes to stdout (not recommended for binary data)
 
-*   All newlines in the file must be the same type (CRLF or LF)
+* **--encodestring** (**-E**) and **--decodestring** (**-D**) use command line content after **--**
 
-If base64 input with newlines does not meet all of the above criteria, the data will fail to decode or will produce corrupt output.
+* The **--buffersize** (**-B**) option specifies a _minimum_ memory buffer size; actual buffer sizes can bw up to 33% larger to accommodate encoding and decoding
+
+* Decodable base64 input containing newlines must meet the following criteria:
+
+  * Line length (except last line) must be a multiple of 4 characters
+
+  * All lines (except last line) must be the same length
+
+  * Lines cannot be longer than 996 characters
+
+  * All newlines must be the same type (CRLF or LF)
+
+  If base64 input with newlines does not meet all of the above criteria, decoding will fail or produce corrupt output
+
+* The output from the **--encodestring** (**-E**) option is suitable for use with the PowerShell **-EncodedCommand** parameter
 
 ## OPENSSL COMMAND EQUIVALENTS
 
